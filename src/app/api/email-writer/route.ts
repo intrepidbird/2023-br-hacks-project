@@ -1,4 +1,5 @@
 import { Configuration, OpenAIApi } from 'openai-edge';
+import { NextResponse } from 'next/server'
 
 // Create an OpenAI API client (that's edge friendly!)
 const config = new Configuration({
@@ -22,6 +23,8 @@ export async function POST(req: Request) {
       },
     ],
   });
+  const body = await response.json()
   // Respond with the stream
-  return response
+  console.log(body.choices[0].message.content)
+  return NextResponse.json({ email: body.choices[0].message.content })
 }

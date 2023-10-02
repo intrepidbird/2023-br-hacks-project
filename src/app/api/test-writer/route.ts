@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai-edge';
 import { NextResponse } from 'next/server';
+
 // Create an OpenAI API client (that's edge friendly!)
 const config = new Configuration({
   apiKey: process.env.OPENAI_KEY,
@@ -18,12 +19,12 @@ export async function POST(req: Request) {
     messages: [
       {
         role: 'user',
-        content: `Write an ad for the product: ${prompt}`,
+        content: `Write tests for the code: ${prompt}`,
       },
     ],
   });
   const body = await response.json()
   // Respond with the stream
   console.log(body.choices[0].message.content)
-  return NextResponse.json({ ad: body.choices[0].message.content })
+  return NextResponse.json({ summary: body.choices[0].message.content })
 }

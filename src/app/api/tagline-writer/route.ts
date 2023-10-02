@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai-edge';
 import { NextResponse } from 'next/server';
+
 // Create an OpenAI API client (that's edge friendly!)
 const config = new Configuration({
   apiKey: process.env.OPENAI_KEY,
@@ -10,20 +11,24 @@ const openai = new OpenAIApi(config);
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const { prompt } = await req.json();
-  console.log(prompt)
-  // Ask OpenAI for a streaming completion given the prompt
+  const { businessName } = await req.json();
+  console.log(`Business Name: ${businessName}`);
+  
+  // Ask OpenAI for a streaming completion given the business name
   const response = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-3.5-turbo', 
     messages: [
       {
         role: 'user',
-        content: `Write an ad for the product: ${prompt}`,
+        content: `Generate a tagline for this business : ${businessName}`,
       },
     ],
   });
-  const body = await response.json()
+  
+  const body = await response.json();
+  
   // Respond with the stream
-  console.log(body.choices[0].message.content)
-  return NextResponse.json({ ad: body.choices[0].message.content })
+  console.log(`Tagline: ${body.choices[0].message.content}`);
+  
+  return NextResponse.json({ tagline: body.choices[0].message.content });
 }
